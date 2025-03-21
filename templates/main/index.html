@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block title %}首页{% endblock %}
+{% block content %}
+<div class="jumbotron">
+  <h1 class="display-4">欢迎来到学生管理系统</h1>
+  <p class="lead">这是一个简洁优美的系统，方便您管理学生信息。</p>
+  <hr class="my-4">
+  {% if current_user.is_authenticated %}
+  <p>直接前往学生管理页面开始操作。</p>
+  <a class="btn btn-primary btn-lg" href="{{ url_for('student.student_list') }}" role="button">学生管理</a>
+  {% else %}
+  <p>请先登录以使用系统功能。</p>
+  <a class="btn btn-primary btn-lg" href="{{ url_for('auth.login') }}" role="button">登录</a>
+  {% endif %}
+</div>
+{% endblock %}

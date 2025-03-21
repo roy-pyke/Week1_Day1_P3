@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block title %}学生列表{% endblock %}
+{% block content %}
+<h2>学生列表</h2>
+<a href="{{ url_for('student.add_student') }}" class="btn btn-success mb-3">添加学生</a>
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>姓名</th>
+      <th>年龄</th>
+      <th>专业</th>
+      <th>添加者</th>
+      <th>操作</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for student in students %}
+    <tr>
+      <td>{{ student.id }}</td>
+      <td>{{ student.name }}</td>
+      <td>{{ student.age }}</td>
+      <td>{{ student.major or '' }}</td>
+      <td>{{ student.user.username }}</td>
+      <td>
+        <a href="{{ url_for('student.edit_student', id=student.id) }}" class="btn btn-sm btn-primary">编辑</a>
+        <form method="post" action="{{ url_for('student.delete_student', id=student.id) }}" style="display:inline-block;">
+          <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('确认删除？');">删除</button>
+        </form>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}
