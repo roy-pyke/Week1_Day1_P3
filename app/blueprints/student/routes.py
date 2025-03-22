@@ -48,7 +48,7 @@ def add_student():
         except Exception as e:
             current_app.logger.error(f"添加学生失败: {e}")
             db.session.rollback()
-            flash("添加学生失败，请稍后再试")
+            flash(f"添加学生失败，请稍后再试: {e}")
     return render_template('student/add_student.html')
 
 

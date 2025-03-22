@@ -1,9 +1,14 @@
+import os
+
 from flask import Flask
 from .extensions import db, login_manager
+from . import models
 
 
 def create_app(config_class='config.Config'):
-    app = Flask(__name__)
+    app_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+    template_dir = os.path.join(app_root, 'templates')
+    app = Flask(__name__, template_folder=template_dir)
 
     # 加载配置
     try:

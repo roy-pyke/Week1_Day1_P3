@@ -1,7 +1,7 @@
 from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
 from sqlalchemy import event
-from .extensions import db
+from .extensions import db, login_manager
 
 
 class User(UserMixin, db.Model):
@@ -23,6 +23,10 @@ class User(UserMixin, db.Model):
 
     def __repr__(self):
         return f'<User {self.username}>'
+
+@login_manager.user_loader
+def load_user(user_id):
+    return User.query.get(int(user_id))
 
 
 class Student(db.Model):
@@ -52,6 +56,10 @@ class Student(db.Model):
 # 监听 added_by 属性的修改事件，确保一旦设置后就不允许修改
 @event.listens_for(Student.added_by, 'set', retval=True, active_history=True)
 def prevent_added_by_update(target, value, oldvalue, initiator):
+    # 如果对象还没有持久化（target.id is None），允许赋值
+    if target.id is None:
+        return value
+    # 对于已经持久化的对象，oldvalue 非空且与新值不同时禁止修改
     if oldvalue is not None and oldvalue != value:
-        raise ValueError("The 'added_by' field is immutable and cannot be modified once set.")
+         raise ValueError("The 'added_by' field is immutable and cannot be modified once set.")
     return value
